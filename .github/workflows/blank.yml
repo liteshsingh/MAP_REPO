@@ -1,0 +1,21 @@
+name: Deploy to Remote Server
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # You can choose the operating system
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Add any build or test steps here if needed
+
+      - name: Deploy
+        run: |
+          # Here you can make a curl or HTTP request to your API endpoint
+          curl -X POST --header 'Content-Type: application/octet-stream' --header 'Accept: application/json' 'https://localhost:14000/api/deployment?validation-time=IMMEDIATE&activation-time=IMMEDIATE&file-name=IMMEDIATE'
