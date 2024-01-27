@@ -1,0 +1,368 @@
+(:
+AUTO_C_SEEDELFOR_V3_0_to_DELFOR_Customer.seemap
+created at Feb 9, 2022 by SEEBURGER
+Copyright (c) SEEBURGER AG, Germany. All Rights Reserved.
+:)
+import schema "" at "XML/SEEXML/SEEDELFOR_V3_0.seexsd" as source;
+import schema "" at "INHOUSE/SAP/DELFOR02_E731.seexsd" as target;
+(:import module namespace CSU = "com.seeburger.com" at "CUSTOMER_SAP_UTILS.seemap";:)
+
+(:considers every input parameter with value NOT_SET to be not set:)
+declare option values.considered.not.set "NOT_SET";
+
+(:default flags, change if necessary:)
+let $writeKA1WithAG := true()
+let $writeKA1WithWE := true()
+let $writeKA1WithEK := true()
+let $writeKA1WithAP := true()
+
+(:record P16 field PRGRS (Date type) - if SCHEDULE.END_DATE > SCHEDULE.START_DATE than write interval (value I) in the field P16.PRGRS
+ * for P16.PRGRS with W/M check set variable to "false"
+:)
+let $writeP16Interval := true()
+let $ConnectionMapDB := openMapDataConnection("DS_MD")
+let $SenderValue := dataMapping($ConnectionMapDB, "FONDERIA_INBOUND_LS", "SUPPLIER_CODE", "SNDPRN")
+
+DELFOR02_E731 <- /SEEDELFOR
+{
+	
+	(: required params :)
+	#require(isInputParameterSet("SND_PRN"), "Parameter SNDPRN is missing", "error")
+	#require(isInputParameterSet("RCVPRN"), "Parameter RCVPRN is missing", "error")
+	#require(isInputParameterSet("MANDT"), "Parameter MANDT is missing", "error")
+	#require(isInputParameterSet("SNDPOR"), "Parameter SNDPOR is missing", "error")
+	#require(isInputParameterSet("RCVPOR"), "Parameter RCVPOR is missing", "error")
+	#require(CNT/FILTER_SET[1]/KEY_02, "Message function in FILTER_SET1 KEY02 not found!", "error")
+
+	let $CNT := CNT	
+	let $MsgFunctionFromFilterSet := CNT/FILTER_SET[1]/KEY_02
+
+	EDI_DC40 <- $SingleItem in CNT/GRP/MSG/ITEM
+	{
+		
+		let $Partner_Number := mapData($SenderValue,../ADD[QUALIFIER = "SU"]/IDENTIFIER)
+		#require($Partner_Number, "mapDB entry is missing in MapTable : FONDERIA_INBOUND_LS for: "|| ../ADD[QUALIFIER = "SU"]/IDENTIFIER , "error")
+
+		let $MessagePosition := (index-of(ancestor :: CNT/GRP/MSG/ME/MESSAGE_NUMBER, ../ME/MESSAGE_NUMBER), 1)[1]
+		let $ItemPositionWithinMessage := index-of(../ITEM/ITEM_POS/LINE_ITEM_NUMBER, ITEM_POS/LINE_ITEM_NUMBER)
+
+		MANDT := getInputParameter("MANDT")
+		DIRECT := "2"
+		IDOCTYP := getInputParameterOrDefault("IDOCTYP", "DELFOR02")
+		CIMTYP := getInputParameterOrDefault("CIMTYP", "")
+		MESTYP := getInputParameterOrDefault("MESTYP", "")
+
+		MESCOD := getInputParameterOrDefault("MESCOD", "")
+		MESFCT := getInputParameterOrDefault("MESFCT", "")
+		STD := switch(../ME/MESSAGE_TYPE)
+						case("830", "862") return "A"
+						default return switch($MsgFunctionFromFilterSet)
+						case("DELFOR", "DELJIT") return "E"
+						case("VDA4905", "VDA4915") return "V"
+						case("DELINS") return "O"
+						default return ""
+
+		STDVRS := ../ME/MESSAGE_TYPE_VERSION || ../ME/MESSAGE_TYPE_RELEASE || ../ME/CONTROLLING_AGENCY
+		STDMES := if(starts-with($MsgFunctionFromFilterSet, "VDA"))
+						then substring($MsgFunctionFromFilterSet, 4)
+						else $MsgFunctionFromFilterSet
+
+		SNDPOR := getInputParameter("SNDPOR")
+		SNDPRT := getInputParameterOrDefault("SNDPRT", "LS")
+		SNDPFC := getInputParameterOrDefault("SNDPFC", "AG")
+		(:SNDPRN := $Partner_Number:)
+		SNDPRN := getInputParameter('SND_PRN')
+		SNDLAD := $CNT/IC/SENDER
+		RCVPOR := getInputParameter("RCVPOR")
+		RCVPRT := getInputParameterOrDefault("RCVPRT", "LS")
+		(:RCVPRN := getInputParameterOrDefault("RCVPRN","FTTCLNT100"):)
+		RCVPRN := "FTTCLNT100"
+		RCVLAD := $CNT/IC/RECEIVER
+		CREDAT := $CNT/IC/TRANSMISSION_DATE
+		CRETIM := $CNT/IC/TRANSMISSION_TIME
+		REFINT := (left($CNT/FILTER_SET[1]/KEY_01, 14), "VDA")[1]
+		ARCKEY := if(isInputParameterSet("ARCKEY"))
+						then getInputParameter("ARCKEY") || "_" || REF[QUALIFIER = "AAN"]/REFERENCE || "_" || $MessagePosition || "_" || $ItemPositionWithinMessage
+						else ""
+
+		E1EDK09
+		{
+			VTRNR := (REF[QUALIFIER = "ON"]/REFERENCE, ../REF[QUALIFIER = "ON"]/REFERENCE)[1]
+
+			BSTDK := if($MsgFunctionFromFilterSet = "DELJIT")
+							then(../REF[QUALIFIER = "RE"]/REFERENCE_DATE, REF[QUALIFIER = "AAN"]/REFERENCE_DATE, ../REF[QUALIFIER = "AAN"]/REFERENCE_DATE)[1]
+							else(REF[QUALIFIER = "AAN"]/REFERENCE_DATE, ../REF[QUALIFIER = "AAN"]/REFERENCE_DATE)[1]
+			LABNK := if($MsgFunctionFromFilterSet = "DELJIT")
+							then(../REF[QUALIFIER = "RE"]/REFERENCE, REF[QUALIFIER = "AAN"]/REFERENCE, ../REF[QUALIFIER = "AAN"]/REFERENCE)[1]
+							else(REF[QUALIFIER = "AAN"]/REFERENCE, ../REF[QUALIFIER = "AAN"]/REFERENCE)[1]
+			ZEICH := REF[QUALIFIER = "VDA_SC"]/REFERENCE
+
+			BSTZD := if($MsgFunctionFromFilterSet = "VDA4905")
+							then REF[QUALIFIER = "VDA_KONT"]/REFERENCE
+							else ""
+
+			ABRVW := switch((REF[QUALIFIER = "VDA_UI"]/REFERENCE, ../REF[QUALIFIER = "VDA_UI"]/REFERENCE)[1])
+							case("CU", "C") return "S"
+							case "SE" return "E"
+							default return REF[QUALIFIER = "VDA_UI"]/REFERENCE
+
+			ABNRA := (REF[QUALIFIER = "AIF"]/REFERENCE, ../REF[QUALIFIER = "AIF"]/REFERENCE)[1]
+			ABNRD := (REF[QUALIFIER = "AIF"]/REFERENCE_DATE, ../REF[QUALIFIER = "AIF"]/REFERENCE_DATE)[1]
+
+			E1EDKA1 <- (../ADD[QUALIFIER = "SU"], ../ADD[QUALIFIER = "SE"], ../ADD[QUALIFIER = "SF"])[1]
+			{
+				PARVW := "LF"
+				PARTN := (ADDITIONAL_DATA[QUALIFIER = "ADE"]/DATA, IDENTIFIER)[1]
+				NAME1 := (NAME_1, PARTY_NAME_1)[1]
+				NAME2 := (NAME_2, PARTY_NAME_2)[1]
+				NAME3 := (NAME_3, PARTY_NAME_3)[1]
+				NAME4 := (NAME_4, PARTY_NAME_4)[1]
+				STRAS := STREET_1
+				STRS2 := STREET_2
+				ORT01 := CITY
+				COUNC := COUNTRY
+				PSTLZ := POSTAL_CODE
+				LAND1 := COUNTRY_CODE
+				REGIO := STATE
+			}
+
+			(:write KA1 WE from first occurrence of ADD+ST, only when flag is set to true and no ITEM/ADD+ST IDENTIFIER or ADDITIONAL_DETAILS+ADE with message function DELINS :)
+			if(($writeKA1WithWE and empty($SingleItem/ADD[QUALIFIER = "ST"]/IDENTIFIER) | $SingleItem/ADD[QUALIFIER = "ST"]))
+			{
+				E1EDKA1 <- (../ADD[QUALIFIER = "ST"],../ITEM/ADD[QUALIFIER = "ST"])[1]
+				{
+					PARVW := "WE"
+					PARTN := IDENTIFIER
+					NAME1 := (NAME_1, PARTY_NAME_1)[1]
+					NAME2 := (NAME_2, PARTY_NAME_2)[1]
+					NAME3 := (NAME_3, PARTY_NAME_3)[1]
+					NAME4 := (NAME_4, PARTY_NAME_4)[1]
+					STRAS := STREET_1
+					STRS2 := STREET_2
+					ORT01 := CITY
+					COUNC := COUNTRY
+					PSTLZ := POSTAL_CODE
+					LAND1 := COUNTRY_CODE
+					ABLAD := ../ADD[QUALIFIER = "11"]/IDENTIFIER
+					REGIO := STATE
+				}
+			}
+			if($writeKA1WithAG)
+			{
+				E1EDKA1 <- (../ADD[QUALIFIER = "BY"], ../ADD[QUALIFIER = "MI"])[1]
+				{
+					PARVW := "AG"
+					PARTN := IDENTIFIER
+					NAME1 := (NAME_1, PARTY_NAME_1)[1]
+					NAME2 := (NAME_2, PARTY_NAME_2)[1]
+					NAME3 := (NAME_3, PARTY_NAME_3)[1]
+					NAME4 := (NAME_4, PARTY_NAME_4)[1]
+					STRAS := STREET_1
+					STRS2 := STREET_2
+					ORT01 := CITY
+					COUNC := COUNTRY
+					PSTLZ := POSTAL_CODE
+					LAND1 := COUNTRY_CODE
+					REGIO := STATE
+				}
+			}
+			if($writeKA1WithEK)
+			{
+				E1EDKA1 <- ../ADD[QUALIFIER = "BY"][1]
+				{
+					PARVW := "EK"
+					PARTN := IDENTIFIER
+					NAME1 := (NAME_1, PARTY_NAME_1)[1]
+					NAME2 := (NAME_2, PARTY_NAME_2)[1]
+					NAME3 := (NAME_3, PARTY_NAME_3)[1]
+					NAME4 := (NAME_4, PARTY_NAME_4)[1]
+					STRAS := STREET_1
+					STRS2 := STREET_2
+					ORT01 := CITY
+					COUNC := COUNTRY
+					PSTLZ := POSTAL_CODE
+					LAND1 := COUNTRY_CODE
+					REGIO := STATE
+				}
+			}
+			if($writeKA1WithAP)
+			{
+				E1EDKA1 <- ../ADD[QUALIFIER = "PK"][1]
+				{
+					PARVW := "AP"
+					PARTN := IDENTIFIER
+					NAME1 := (NAME_1, PARTY_NAME_1)[1]
+					NAME2 := (NAME_2, PARTY_NAME_2)[1]
+					NAME3 := (NAME_3, PARTY_NAME_3)[1]
+					NAME4 := (NAME_4, PARTY_NAME_4)[1]
+					STRAS := STREET_1
+					STRS2 := STREET_2
+					ORT01 := CITY
+					COUNC := COUNTRY
+					PSTLZ := POSTAL_CODE
+					LAND1 := COUNTRY_CODE
+					REGIO := STATE
+				}
+			}
+
+			E1EDP10
+			{
+				IDNKD := ITEM_NUMBER[QUALIFIER = "IN"]/ITEM_NUMBER
+				ARKTX := ITEM_POS/ITEM_DESCRIPTION[last()]
+
+				VRKME := switch(SCHEDULE[1]/QUANTITY_UNIT)
+								case "ST" return "PCE"
+								case "M" return "MTR"
+								case "M2" return "MTK"
+								case "M3" return "MTQ"
+								case "L" return "LTR"
+								case "T" return "TNE"
+								case "KG" return "KGM"
+								case "G" return "GRM"
+								default return SCHEDULE[last()]/QUANTITY_UNIT
+
+				KWERK := (ADD[QUALIFIER = "ST"]/IDENTIFIER, ../ADD[QUALIFIER = "ST"]/IDENTIFIER)[1]
+				KLGOR := (ADD[QUALIFIER =("18", "7")][1]/IDENTIFIER, ../ADD[QUALIFIER =("18", "7")][1]/IDENTIFIER)[1]
+				DFABL := (ADD[QUALIFIER = "11"]/IDENTIFIER, ../ADD[QUALIFIER = "11"]/IDENTIFIER)[1]
+				VBRST := (ADD[QUALIFIER = "159"]/IDENTIFIER, ../ADD[QUALIFIER = "159"]/IDENTIFIER)[1]
+
+				let $ASN := for $QDRElement in QTY_DATE_REF[QUALIFIER = "ASN"] order by $QDRElement/DATE descending, $QDRElement/REFERENCE descending return $QDRElement
+				BELNR := $ASN[1]/REFERENCE
+				LFIMG := $ASN[1]/QUANTITY
+
+				VEMNG := QTY_DATE_REF[QUALIFIER = "48"][1]/QUANTITY
+
+				LIDTL := $ASN[1]/DATE
+				ABHOR := if($MsgFunctionFromFilterSet = "DELJIT")
+								then switch(SCHEDULE[last()]/FORECAST_QUALIFIER)
+												case("IMM", "FIX", "USER", "FOR", "REM") return SCHEDULE[last()]/START_DATE
+												case "NOD" return format-date(current-dateTime(), "yyyyMMddd")
+												default return(DATE[QUALIFIER = "159"]/DATE, ../DATE[QUALIFIER = "159"]/DATE)[1]
+								else ""
+
+				AKUBM := QTY_DATE_REF[QUALIFIER = "CQO"][1]/QUANTITY
+				AKUEM := QTY_DATE_REF[QUALIFIER = "CQ"][1]/QUANTITY
+
+				ECHNO := right(REF[QUALIFIER = "EC"]/REFERENCE, 1)
+				ABFDE := (SCHEDULE[FORECAST_QUALIFIER = "FRE"]/END_DATE, SCHEDULE[FORECAST_QUALIFIER = "FRE"]/START_DATE)[1]
+				if(SCHEDULE[FORECAST_QUALIFIER = "FRE"])
+				{
+					MFADT := (SCHEDULE[FORECAST_QUALIFIER = "FRE"][last()]/CUM_QUANTITY, sum(for $Qty in SCHEDULE[FORECAST_QUALIFIER = "FRE"]/QUANTITY return number($Qty)))[1]
+				}
+
+				ABMDE := (SCHEDULE[FORECAST_QUALIFIER = "MAT"]/END_DATE, SCHEDULE[FORECAST_QUALIFIER = "MAT"]/START_DATE)[1]
+				FPSDN := REF[QUALIFIER = "MP"]/REFERENCE
+
+				LABKY := if($MsgFunctionFromFilterSet =("DELFOR", "VDA4905") and not(REF[QUALIFIER = "CALLKEY"]/REFERENCE = "FAB"))
+								then switch($MsgFunctionFromFilterSet)
+												case "VDA4905" return "2"
+												case "DELFOR" return switch(../REF[QUALIFIER = "MESSAGE_FUNCTION"]/REFERENCE)
+																case("2", "4", "6") return "1"
+																case("5", "9") return "2"
+																default return ""
+												default return ""
+								else ""
+
+				ABRAB := (DATE[QUALIFIER =("157", "158")][1]/DATE, ../DATE[QUALIFIER =("157", "158")][1]/DATE)[1]
+				ABRBI := (DATE[QUALIFIER =("159", "36")]/DATE, ../DATE[QUALIFIER =("159", "36")]/DATE)[1]
+				SCREL := switch($MsgFunctionFromFilterSet)
+								case "VDA4905" return "04"
+								case "DELINS" return if(REF[QUALIFIER = "CALLKEY"]/REFERENCE = "FAB")
+												then "02"
+												else "04"
+								case("DELJIT", "VDA4915") return "02"
+								case "DELFOR" return if(../REF[QUALIFIER = "AAN"]/ADDITIONAL_INFO = "242" and ../REF[QUALIFIER = "RE"]/ADDITIONAL_INFO = "242")
+												then "02"
+												else "04"
+								default return ""
+				NULDT := QTY_DATE_REF[QUALIFIER = "CQ"]/DATE
+				SOLLFZ := QTY_DATE_REF[QUALIFIER = "PQ"]/QUANTITY
+				SOLLDT := QTY_DATE_REF[QUALIFIER = "PQ"]/DATE
+				IDNLF := ITEM_NUMBER[QUALIFIER = "SA"]/ITEM_NUMBER
+				BSTDK := (REF[QUALIFIER = "ON"]/REFERENCE_DATE, ../REF[QUALIFIER = "ON"]/REFERENCE_DATE)[1]
+				ABNRD := REF[QUALIFIER = "AIF"]/REFERENCE_DATE
+				VTRNR := (REF[QUALIFIER = "ON"]/REFERENCE, ../REF[QUALIFIER = "ON"]/REFERENCE)[1]
+				if(SCHEDULE[FORECAST_QUALIFIER = "MAT"])
+				{
+					MFRFZ := (SCHEDULE[FORECAST_QUALIFIER = "MAT"][last()]/CUM_QUANTITY, sum(for $Qty in SCHEDULE[FORECAST_QUALIFIER = "MAT"]/QUANTITY return number($Qty)))[1]
+				}
+
+				POSEX := (REF[QUALIFIER = "ON"]/ADDITIONAL_INFO, ITEM_POS/LINE_ITEM_NUMBER)[1]
+
+				E1EDP14 <- PACKAGE_DETAILS
+				{
+					PCKNR := PACKAGE_PARTNUMBER_CUSTOMER
+					ANZPK := NUMBER_OF_PACKAGES
+					ANZAR := QUANTITY_PER_PACKAGE
+				}
+
+				E1EDP16 <- SCHEDULE[not(FORECAST_QUALIFIER =("FRE", "MAT"))]
+				{
+					let $CalcTimingQualifier := switch(dayDiff(parseDate(START_DATE, "yyyyMMdd"), parseDate((END_DATE, START_DATE)[1], "yyyyMMdd")))
+									case 0 return "D"
+									case(1, 2, 3, 4, 5, 6, 7) return if($writeP16Interval)
+													then "I"
+													else "W"
+									default return if($writeP16Interval)
+									then "I"
+									else "M"
+
+					let $lastDates := for $EndDate in ../SCHEDULE[FORECAST_QUALIFIER =("FOR", "FIX", "USER")]/END_DATE order by $EndDate descending return $EndDate
+					let $LastDate := parseDate($lastDates[1], "yyyyMMdd")
+					let $NewStartdate := format-date(addDays($LastDate, 1), "yyyyMMdd")
+
+					ETTYP := switch(FORECAST_QUALIFIER)
+									case "BAC" return "2"
+									case "IMM" return "3"
+									case ("FOR", "REM") return "4"
+									case ("NOD", "FIX") return "1"
+									case "USER" return if(isFilled(END_DATE))
+													then "4"
+													else "1"
+									default return()
+
+					PRGRS := switch(FORECAST_QUALIFIER)
+									case ("BAC", "IMM", "NOD") return "D"
+									case "REM" return "M"
+									case ("FIX", "USER", "FOR") return(TIMING_QUALIFIER[. =("M", "W")], $CalcTimingQualifier, "I")[1]
+									default return()
+
+					EDATUV := switch(FORECAST_QUALIFIER)
+									case ("BAC","IMM","FIX","USER","FOR") return START_DATE
+									case "REM" return if(isFilled(START_DATE))
+													then START_DATE
+													else $NewStartdate
+									case "NOD" return(START_DATE, format-date(current-dateTime(), "yyyyMMdd"))[1]
+									default return()
+
+					EZEIT := START_TIME
+
+					EDATUB := switch(FORECAST_QUALIFIER)
+									case "BAC" return(END_DATE, START_DATE, format-date(current-dateTime(), "yyyyMMdd"))[1]
+									case ("IMM","FIX", "USER", "FOR") return(END_DATE, START_DATE)[1]
+									case "REM" return if(isFilled(START_DATE))
+													then(END_DATE, START_DATE)[1]
+													else left($NewStartdate, 4) || "1231"
+									case "NOD" return(START_DATE, format-date(current-dateTime(), "yyyyMMdd"))[1]
+									default return()
+
+					WMENG := QUANTITY
+				}
+
+				(:create P16 incase no call-off date is provided:)
+				if(not(SCHEDULE/FORECAST_QUALIFIER =("BAC", "IMM", "FOR", "NOD", "USER", "FIX", "REM")))
+				{
+					E1EDP16
+					{
+						ETTYP := "1"
+						PRGRS := "D"
+						EDATUV := format-date(current-dateTime(), "yyyyMMdd")
+						EZEIT := "0000"
+						EDATUB := format-date(current-dateTime(), "yyyyMMdd")
+						WMENG := "0"
+					}
+				}
+			}
+		}
+	}
+}
