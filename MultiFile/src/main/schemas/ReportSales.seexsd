@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><xsd:schema xmlns="test" xmlns:bic="http://www.seeburger.com/bicng/lang/schema/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" bic:messageType="XML" elementFormDefault="qualified" targetNamespace="http://www.seeburger.com/BISMD_Workshop/Report_Sales">
+   
+    <xsd:import namespace="http://www.seeburger.com/bicng/lang/schema/xml" schemaLocation="platform:/plugin/com.seeburger.bicng.lang.schema.facade.xml/resources/xml.xsd"/>
+     
+  <xsd:element name="Report_Sales">
+        
+    <xsd:complexType>
+            
+      <xsd:sequence>
+                
+        <xsd:element maxOccurs="1" minOccurs="1" name="Summary">
+                    
+          <xsd:complexType>
+                        
+            <xsd:sequence>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="ReportDate">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                                          
+              <xsd:element maxOccurs="1" minOccurs="1" name="ReportTime">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                                          
+              <xsd:element maxOccurs="1" minOccurs="1" name="SalesAmount">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="ReturnAmount">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="NumberOfSales">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                                      
+            </xsd:sequence>
+                      
+          </xsd:complexType>
+                  
+        </xsd:element>
+                        
+        <xsd:element maxOccurs="unbounded" minOccurs="1" name="Transaction">
+                    
+          <xsd:complexType>
+                        
+            <xsd:sequence>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="TransactionDate">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="TransactionTime">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="TotalAmount">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                            
+              <xsd:element maxOccurs="1" minOccurs="1" name="StoreID">
+                                
+                <xsd:simpleType>
+                                    
+                  <xsd:restriction base="xsd:string"/>
+                                  
+                </xsd:simpleType>
+                              
+              </xsd:element>
+                                          
+              <xsd:element maxOccurs="unbounded" minOccurs="1" name="Item">
+                                
+                <xsd:complexType>
+                                    
+                  <xsd:sequence>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="0" name="GTIN">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:string"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="MainDescription">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:string"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="SubDescription">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:string"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Quantity">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:string"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Amount">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:string"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                      
+                  </xsd:sequence>
+                                    
+                  <xsd:attribute name="Direction">
+                                        
+                    <xsd:simpleType>
+                                            
+                      <xsd:restriction base="xsd:string"/>
+                                          
+                    </xsd:simpleType>
+                                      
+                  </xsd:attribute>
+                                  
+                </xsd:complexType>
+                              
+              </xsd:element>
+                                      
+            </xsd:sequence>
+                      
+          </xsd:complexType>
+                  
+        </xsd:element>
+                    
+      </xsd:sequence>
+          
+    </xsd:complexType>
+      
+  </xsd:element>
+  
+</xsd:schema>

@@ -1,0 +1,50 @@
+(:
+MultiSource.seemap
+created at Feb 26, 2024 by academy
+:)
+import schema default element namespace "http://www.seeburger.com/List_Of_Books" at "List_Of_Books.seexsd" as source;
+import schema "http://www.seeburger.com/BISMD_Workshop/SalesOfDay" at "SalesOfDay.seexsd" as source;
+import schema default element namespace "http://www.seeburger.com/BISMD_Workshop/Library_List" at "Library_List.seexsd" as target;
+import schema namespace rep = "http://www.seeburger.com/BISMD_Workshop/Report_Sales" at "ReportSales.seexsd" as target;
+
+(:import schema namespace rep = "http://www.seeburger.com/BISMD_Workshop/Report_Sales" at "ReportSales.seexsd" as target;:)
+(:import schema namespace lib = "http://www.seeburger.com/BISMD_Workshop/Library_List" at "Library_List.seexsd" as source;:)
+(:import schema default element namespace "http://www.seeburger.com/BISMD_Workshop/Report_Sales" at "ReportSales.seexsd" as target;:)
+(:import schema namespace lib = "http://www.seeburger.com/BISMD_Workshop/Library_List" at "Library_List.seexsd" as target;:)
+
+
+
+(:root <- /List_Of_Books/Books { 
+  Books_of_Release_Year {
+  	Release_Year := Book/@Release_Year
+  	
+  	Book {
+  		Author_Name := doc("additional_file","http://www.seeburger.com/BISMD_Workshop/SalesOfDay")/SalesOfDay/Transaction/SaleNumber 	}
+  }
+}:)
+
+doc("test", "http://www.seeburger.com/BISMD_Workshop/Report_Sales")
+{
+	Report_Sales
+	{
+		Summary{
+			ReportDate := "1234"
+		}
+	}
+}
+
+doc("lib","http://www.seeburger.com/BISMD_Workshop/Library_List")
+{
+	root{
+		Books_of_Release_Year {
+			Release_Year := "222334"
+		}
+	}
+}
+
+(:doc("doc1", "text")
+{	
+	
+	}:)
+
+

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.seeburger.com/BISMD_Workshop/Library_List" xmlns:bic="http://www.seeburger.com/bicng/lang/schema/" xmlns:json="http://www.seeburger.com/bicng/lang/schema/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" bic:messageType="JSON" elementFormDefault="qualified" targetNamespace="http://www.seeburger.com/BISMD_Workshop/Library_List">
+    
+  <xsd:import namespace="http://www.seeburger.com/bicng/lang/schema/json" schemaLocation="platform:/plugin/com.seeburger.bicng.lang.schema.facade.json/resources/json.xsd"/>
+    
+  <xsd:element name="root">
+        
+    <xsd:complexType>
+            
+      <xsd:complexContent>
+                
+        <xsd:extension base="json:ObjectMessageRoot">
+                    
+          <xsd:all>
+                        
+            <xsd:element maxOccurs="unbounded" minOccurs="1" name="Books_of_Release_Year">
+                            
+              <xsd:complexType>
+                                
+                <xsd:complexContent>
+                                    
+                  <xsd:extension base="json:Object">
+                                        
+                    <xsd:all>
+                                            
+                      <xsd:element maxOccurs="1" minOccurs="1" name="Release_Year">
+                                                
+                        <xsd:simpleType>
+                                                    
+                          <xsd:restriction base="json:String"/>
+                                                  
+                        </xsd:simpleType>
+                                              
+                      </xsd:element>
+                                            
+                      <xsd:element maxOccurs="unbounded" minOccurs="1" name="Book">
+                                                
+                        <xsd:complexType>
+                                                    
+                          <xsd:complexContent>
+                                                        
+                            <xsd:extension base="json:Object">
+                                                            
+                              <xsd:all>
+                                                                
+                                <xsd:element maxOccurs="1" minOccurs="1" name="Author_Name">
+                                                                    
+                                  <xsd:simpleType>
+                                                                        
+                                    <xsd:restriction base="json:String"/>
+                                                                      
+                                  </xsd:simpleType>
+                                                                  
+                                </xsd:element>
+                                                                
+                                <xsd:element maxOccurs="1" minOccurs="1" name="Title">
+                                                                    
+                                  <xsd:simpleType>
+                                                                        
+                                    <xsd:restriction base="json:String"/>
+                                                                      
+                                  </xsd:simpleType>
+                                                                  
+                                </xsd:element>
+                                                                
+                                <xsd:element maxOccurs="1" minOccurs="1" name="Rating">
+                                                                    
+                                  <xsd:simpleType>
+                                                                        
+                                    <xsd:restriction base="json:String"/>
+                                                                      
+                                  </xsd:simpleType>
+                                                                  
+                                </xsd:element>
+                                                                
+                                <xsd:element maxOccurs="unbounded" minOccurs="0" name="Comment">
+                                                                    
+                                  <xsd:simpleType>
+                                                                        
+                                    <xsd:restriction base="json:String"/>
+                                                                      
+                                  </xsd:simpleType>
+                                                                  
+                                </xsd:element>
+                                                              
+                              </xsd:all>
+                                                          
+                            </xsd:extension>
+                                                      
+                          </xsd:complexContent>
+                                                  
+                        </xsd:complexType>
+                                              
+                      </xsd:element>
+                                          
+                    </xsd:all>
+                                      
+                  </xsd:extension>
+                                  
+                </xsd:complexContent>
+                              
+              </xsd:complexType>
+                          
+            </xsd:element>
+                      
+          </xsd:all>
+                  
+        </xsd:extension>
+              
+      </xsd:complexContent>
+          
+    </xsd:complexType>
+      
+  </xsd:element>
+  
+</xsd:schema>

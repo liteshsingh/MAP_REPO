@@ -1,0 +1,105 @@
+
+<List_Of_Books xmlns="http://www.seeburger.com/List_Of_Books">
+	<Books>
+		<Book Release_Year ="1954">
+			<Author>
+				<Name>Tolkien</Name>
+				<First_Name>John Ronald Reuel</First_Name>
+			</Author>
+			<Title>Lord of the Rings</Title>
+			<Rating>5</Rating>
+			<Comment>
+				<Comment_Author>Gollum</Comment_Author>
+				<Comment_Text>My precious!</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="2003">
+			<Author>
+				<Name>Rowling</Name>
+				<First_Name>J. K.</First_Name>
+			</Author>
+			<Title>Harry Potter and the Order of the Phoenix</Title>
+			<Rating>3</Rating>
+			<Comment>
+				<Comment_Author>dumbledore</Comment_Author>
+				<Comment_Text>Ten points to Griffindor</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="1977">
+			<Author>
+				<Name>Tolkien</Name>
+				<First_Name>John Ronald Reuel</First_Name>
+			</Author>
+			<Title>The Silmarillion</Title>
+			<Rating>4</Rating>
+			<Comment>
+				<Comment_Author>Morgoth</Comment_Author>
+				<Comment_Text>I do not like the end</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="1937">
+			<Author>
+				<Name>Tolkien</Name>
+				<First_Name>John Ronald Reuel</First_Name>
+			</Author>
+			<Title>The Hobbit or There and Back Again</Title>
+			<Rating>2</Rating>
+			<Comment>
+				<Comment_Author>S. Maug</Comment_Author>
+				<Comment_Text>the only nice guy in that book is the dragon</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="1949">
+			<Author>
+				<Name>Orwell</Name>
+				<First_Name>George</First_Name>
+			</Author>
+			<Title>Nineteen Eighty-Four</Title>
+			<Rating>3</Rating>
+			<Comment>
+				<Comment_Author>Big Brother</Comment_Author>
+				<Comment_Text>I do not watch anybody</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="2003">
+			<Author>
+				<Name>Brown</Name>
+				<First_Name>Dan</First_Name>
+			</Author>
+			<Title>The Da Vinci Code</Title>
+			<Rating>4</Rating>
+			<Comment>
+				<Comment_Author>Leo D. Avinci</Comment_Author>
+				<Comment_Text>very simple code I...da Vinci would never use</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="1996">
+			<Author>
+				<Name>Martin</Name>
+				<First_Name>George R. R.</First_Name>
+			</Author>
+			<Title>A Song of Ice and Fire - A Game of Thrones</Title>
+			<Rating>3</Rating>
+			<Comment>
+				<Comment_Author>Jon Snow</Comment_Author>
+				<Comment_Text>I know nothing...that I could write here</Comment_Text>
+			</Comment>
+			<Comment>
+				<Comment_Author>Aerys II Targaryen</Comment_Author>
+				<Comment_Text>Burn them all</Comment_Text>
+			</Comment>
+		</Book>
+		<Book Release_Year ="2009">
+			<Author>
+				<Name>Kling</Name>
+				<First_Name>Marc-Uwe</First_Name>
+			</Author>
+			<Title>Die Kaenguru-Chroniken</Title>
+			<Rating>5</Rating>
+			<Comment>
+				<Comment_Author>Ein Beuteltier</Comment_Author>
+				<Comment_Text>Ach, mein...dein...das sind doch alles buergerliche Kategorien</Comment_Text>
+			</Comment>
+		</Book>
+	</Books>
+</List_Of_Books>

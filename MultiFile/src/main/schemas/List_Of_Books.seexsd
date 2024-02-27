@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.seeburger.com/List_Of_Books" xmlns:bic="http://www.seeburger.com/bicng/lang/schema/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" bic:messageType="XML" elementFormDefault="qualified" targetNamespace="http://www.seeburger.com/List_Of_Books">
+    
+  <xsd:element name="List_Of_Books">
+        
+    <xsd:complexType>
+            
+      <xsd:sequence>
+                
+        <xsd:element maxOccurs="1" minOccurs="1" name="Books">
+                    
+          <xsd:complexType>
+                        
+            <xsd:sequence>
+                            
+              <xsd:element maxOccurs="unbounded" minOccurs="1" name="Book">
+                                
+                <xsd:complexType>
+                                    
+                  <xsd:sequence>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Author">
+                                            
+                      <xsd:complexType>
+                                                
+                        <xsd:sequence>
+                                                    
+                          <xsd:element maxOccurs="1" minOccurs="1" name="Name">
+                                                        
+                            <xsd:simpleType>
+                                                            
+                              <xsd:restriction base="xsd:string"/>
+                                                          
+                            </xsd:simpleType>
+                                                      
+                          </xsd:element>
+                                                    
+                          <xsd:element maxOccurs="1" minOccurs="1" name="First_Name">
+                                                        
+                            <xsd:simpleType>
+                                                            
+                              <xsd:restriction base="xsd:string"/>
+                                                          
+                            </xsd:simpleType>
+                                                      
+                          </xsd:element>
+                                                  
+                        </xsd:sequence>
+                                              
+                      </xsd:complexType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Title">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:string"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="1" minOccurs="1" name="Rating">
+                                            
+                      <xsd:simpleType>
+                                                
+                        <xsd:restriction base="xsd:integer"/>
+                                              
+                      </xsd:simpleType>
+                                          
+                    </xsd:element>
+                                        
+                    <xsd:element maxOccurs="unbounded" minOccurs="0" name="Comment">
+                                            
+                      <xsd:complexType>
+                                                
+                        <xsd:sequence>
+                                                    
+                          <xsd:element maxOccurs="1" minOccurs="1" name="Comment_Author">
+                                                        
+                            <xsd:simpleType>
+                                                            
+                              <xsd:restriction base="xsd:string"/>
+                                                          
+                            </xsd:simpleType>
+                                                      
+                          </xsd:element>
+                                                    
+                          <xsd:element maxOccurs="1" minOccurs="1" name="Comment_Text">
+                                                        
+                            <xsd:simpleType>
+                                                            
+                              <xsd:restriction base="xsd:string"/>
+                                                          
+                            </xsd:simpleType>
+                                                      
+                          </xsd:element>
+                                                  
+                        </xsd:sequence>
+                                              
+                      </xsd:complexType>
+                                          
+                    </xsd:element>
+                                      
+                  </xsd:sequence>
+                                    
+                  <xsd:attribute name="Release_Year">
+                                        
+                    <xsd:simpleType>
+                                            
+                      <xsd:restriction base="xsd:string"/>
+                                          
+                    </xsd:simpleType>
+                                      
+                  </xsd:attribute>
+                                  
+                </xsd:complexType>
+                              
+              </xsd:element>
+                          
+            </xsd:sequence>
+                      
+          </xsd:complexType>
+                  
+        </xsd:element>
+              
+      </xsd:sequence>
+          
+    </xsd:complexType>
+      
+  </xsd:element>
+  
+</xsd:schema>

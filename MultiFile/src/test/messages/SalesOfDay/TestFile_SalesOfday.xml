@@ -1,0 +1,134 @@
+
+<SalesOfDay xmlns="http://www.seeburger.com/BISMD_Workshop/SalesOfDay">
+	<Transaction>
+		<SaleNumber>1</SaleNumber>
+		<SaleDate>2019-01-01</SaleDate>
+		<SaleTime>12:37</SaleTime>
+		<StoreID>DE61729374</StoreID>
+		<WorkstationID>123654</WorkstationID>
+		<Cashier>M. Muller</Cashier>
+		<Item Type="Sale">
+			<ItemNumber>1</ItemNumber>
+			<SoldItems>3</SoldItems>
+			<ItemDescription>chocolate x-tra dark</ItemDescription>
+			<PricePerItem>1.20</PricePerItem>
+			<Amount>3.60</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>43123456789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>321456987</Value>
+			</ArticleNumber>
+		</Item>
+		<Item Type="Sale">
+			<ItemNumber>2</ItemNumber>
+			<SoldItems>2</SoldItems>
+			<ItemDescription>Spaghetti</ItemDescription>
+			<PricePerItem>2.80</PricePerItem>
+			<Amount>5.60</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>43187956789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>321456987</Value>
+			</ArticleNumber>
+		</Item>
+		<Item Type="Sale">
+			<ItemNumber>3</ItemNumber>
+			<SoldItems>1</SoldItems>
+			<ItemDescription>boiled eggs, bio</ItemDescription>
+			<PricePerItem>1.99</PricePerItem>
+			<Amount>1.99</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>43187989456789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>784356987</Value>
+			</ArticleNumber>
+		</Item>
+		<Item Type="Return">
+			<ItemNumber>1</ItemNumber>
+			<SoldItems>1</SoldItems>
+			<ItemDescription>T-Shirt, Donald Duck</ItemDescription>
+			<PricePerItem>19.99</PricePerItem>
+			<Amount>19.99</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>441234368789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>321456987</Value>
+			</ArticleNumber>
+			<ReturnReason>Does not fit</ReturnReason>
+		</Item>
+	</Transaction>
+	<Transaction>
+		<SaleNumber>1</SaleNumber>
+		<SaleDate>2019-01-01</SaleDate>
+		<SaleTime>12:37</SaleTime>
+		<StoreID>DE61729374</StoreID>
+		<WorkstationID>123654</WorkstationID>
+		<Cashier>S. Schmidt</Cashier>
+		<Item Type="Return">
+			<ItemNumber>1</ItemNumber>
+			<SoldItems>1</SoldItems>
+			<ItemDescription>T-Shirt, Donald Duck</ItemDescription>
+			<PricePerItem>19.99</PricePerItem>
+			<Amount>19.99</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>441234368789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>321456987</Value>
+			</ArticleNumber>
+			<ReturnReason>Does not fit</ReturnReason>
+		</Item>
+		<Item Type="Sale">
+			<ItemNumber>2</ItemNumber>
+			<SoldItems>2</SoldItems>
+			<ItemDescription>bubble gum</ItemDescription>
+			<PricePerItem>2.49</PricePerItem>
+			<Amount>4.98</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "GLN">
+				<Value>48745989456789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>89356987</Value>
+			</ArticleNumber>
+		</Item>
+		<Item Type="Sale">
+			<ItemNumber>3</ItemNumber>
+			<SoldItems>10</SoldItems>
+			<ItemDescription>Instant noodles Ramen</ItemDescription>
+			<PricePerItem>0.99</PricePerItem>
+			<Amount>9.90</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>43187989456789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>784356987</Value>
+			</ArticleNumber>
+		</Item>
+		<Item Type="Return">
+			<ItemNumber>4</ItemNumber>
+			<SoldItems>1</SoldItems>
+			<ItemDescription>The One Ring - One ring to rule them all, One ring to find them, One ring to bring them all and in the darkness bind them</ItemDescription>
+			<PricePerItem>666.99</PricePerItem>
+			<Amount>666.99</Amount>
+			<Currency>EUR</Currency>
+			<ArticleNumber Type = "EAN">
+				<Value>441239488789</Value>
+			</ArticleNumber>
+			<ArticleNumber Type = "internal">
+				<Value>6271456987</Value>
+			</ArticleNumber>
+			<ReturnReason>Filthy Hobbits threw it into a vulcano. Does not work any more</ReturnReason>
+		</Item>
+	</Transaction>
+</SalesOfDay>
